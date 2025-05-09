@@ -67,7 +67,7 @@ export interface Article {
 	publishedAt: string;
 	IlgasPavadinimas: string;
 	Tekstas: string;
-	TekstasHtml?: string;
+	TekstasHtml?: string | Promise<string>;
 	Image?: string | null;
 	Nuotrauka?: ArticleImage;
 	Seo?: Array<{

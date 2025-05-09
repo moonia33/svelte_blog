@@ -37,7 +37,7 @@
 	{@html `<script type="application/ld+json">${escapeJsonLd(JSON.stringify(structuredData))}</script>`}
 </svelte:head>
 
-<Breadcrumb />
+<Breadcrumb category={article.categories[0]} {article} />
 
 <article class="prose dark:prose-invert mx-auto max-w-7xl px-8 py-12">
 	{#if article.Image}

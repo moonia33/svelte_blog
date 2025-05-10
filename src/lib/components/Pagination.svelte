@@ -40,13 +40,11 @@
 			// Jei end pasiekė pabaigą, pakoreguojame start
 			if (end === pageCount) {
 				start = Math.max(1, end - maxVisiblePages + 1);
-			}
-
-			// Pridedame pirmus puslapius
+			} // Pridedame pirmus puslapius
 			for (let i = start; i <= end; i++) {
 				newPages.push({
 					name: i.toString(),
-					href: `${baseUrl}/${slug}?page=${i}`,
+					href: slug ? `${baseUrl}/${slug}?page=${i}` : `${baseUrl}?page=${i}`,
 					active: i === currentPage
 				});
 			}
@@ -54,17 +52,22 @@
 
 		pages = newPages;
 	}
-
 	// Mygtukai pirmyn/atgal
 	function previous() {
 		if (currentPage > 1) {
-			goto(`${baseUrl}/${slug}?page=${currentPage - 1}`);
+			const url = slug
+				? `${baseUrl}/${slug}?page=${currentPage - 1}`
+				: `${baseUrl}?page=${currentPage - 1}`;
+			goto(url);
 		}
 	}
 
 	function next() {
 		if (currentPage < pageCount) {
-			goto(`${baseUrl}/${slug}?page=${currentPage + 1}`);
+			const url = slug
+				? `${baseUrl}/${slug}?page=${currentPage + 1}`
+				: `${baseUrl}?page=${currentPage + 1}`;
+			goto(url);
 		}
 	}
 </script>
@@ -83,7 +86,7 @@
 				<ChevronLeftOutline class="h-5 w-5" />
 			{/snippet}
 			{#snippet nextContent()}
-				<span class="sr-only">Sekantis</span>
+				<span class="sr-only">Kitas</span>
 				<ChevronRightOutline class="h-5 w-5" />
 			{/snippet}
 		</Pagination>

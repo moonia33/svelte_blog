@@ -2,9 +2,12 @@ import { PUBLIC_API_URL } from '$env/static/public';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params, fetch, depends }) => {
+export const load: PageServerLoad = async ({ params, fetch, depends, url }) => {
 	depends('app:category'); // Add dependency to trigger reloads
+
 	const { slug } = params;
+	const page = Number(url.searchParams.get('page')) || 1;
+	const limit = 4; // Ribojame straipsnius po 4 puslapyje
 
 	if (!slug) {
 		throw error(404, 'Kategorija nerasta');
@@ -25,9 +28,9 @@ export const load: PageServerLoad = async ({ params, fetch, depends }) => {
 		}
 		const category = categoryData.data[0];
 
-		// Then fetch articles in this category
+		// Then fetch articles in this category with pagination
 		const articlesResponse = await fetch(
-			`${baseUrl}/straipsniais?filters[categories][slug][$eq]=${slug}&populate=*`
+			`${baseUrl}/straipsniais?filters[categories][slug][$eq]=${slug}&populate=*&pagination[page]=${page}&pagination[pageSize]=${limit}&sort=Data:desc`
 		);
 
 		if (!articlesResponse.ok) {
@@ -44,6 +47,8 @@ export const load: PageServerLoad = async ({ params, fetch, depends }) => {
 				description: category.description
 			},
 			articles: articlesData.data || [],
+			pagination: articlesData.meta?.pagination || { page, pageCount: 1, total: 0 },
+			currentPage: page,
 			slug: params.slug
 		};
 	} catch (err) {

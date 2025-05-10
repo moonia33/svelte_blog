@@ -73,7 +73,6 @@
 
 <div class="container mx-auto">
 	<Breadcrumb {category} article={null} />
-
 	<div class="px-4">
 		<h1 class="my-6 text-3xl font-bold">{category?.name ?? 'Kategorija'}</h1>
 		{#if pageDescription}
@@ -82,11 +81,20 @@
 		{#if processing}
 			<p class="text-gray-600 dark:text-gray-400">Kraunama...</p>
 		{:else if articles.length > 0}
-			<h2>Straipsniai kategorijoje {category?.name ?? 'Kategorija'}</h2>
+			<h2 class="mb-3 mt-4 text-xl font-semibold">
+				Straipsniai kategorijoje {category?.name ?? 'Kategorija'}
+			</h2>
 			<Faq {articles} />
 		{:else}
 			<p class="text-gray-600 dark:text-gray-400">Šioje kategorijoje straipsnių nėra.</p>
 		{/if}
 	</div>
-	<Pagination />
+	{#if data?.pagination}
+		<Pagination
+			currentPage={data.pagination.page}
+			pageCount={data.pagination.pageCount}
+			baseUrl="/kategorija"
+			slug={data.category.slug}
+		/>
+	{/if}
 </div>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Article } from '$lib/types/article';
-	import Faq from '$lib/components/Faq.svelte';
+	// import Faq from '$lib/components/Faq.svelte';
+	import Timeline from '$lib/components/Timeline.svelte';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import { PUBLIC_URL } from '$env/static/public';
@@ -80,7 +81,8 @@
 		{#if processing}
 			<p class="text-gray-600 dark:text-gray-400">Kraunama...</p>
 		{:else if articles.length > 0}
-			<Faq {articles} />
+			<!-- <Faq {articles} /> -->
+			<Timeline {articles} />
 		{:else}
 			<p class="text-gray-600 dark:text-gray-400">Straipsnių nėra.</p>
 		{/if}

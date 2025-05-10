@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Article, Category } from '$lib/types/article';
-	import Faq from '$lib/components/Faq.svelte';
+	// import Faq from '$lib/components/Faq.svelte';
+	import Timeline from '$lib/components/Timeline.svelte';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import { PUBLIC_URL } from '$env/static/public';
@@ -88,7 +89,7 @@
 
 <div class="container mx-auto">
 	<Breadcrumb {category} article={null} />
-	<div class="px-4">
+	<div class="px-10">
 		<h1 class="my-6 text-3xl font-bold">{category?.name ?? 'Kategorija'}</h1>
 		{#if pageDescription}
 			<p>{pageDescription}</p>
@@ -96,10 +97,11 @@
 		{#if processing}
 			<p class="text-gray-600 dark:text-gray-400">Kraunama...</p>
 		{:else if articles.length > 0}
-			<h2 class="mb-3 mt-4 text-xl font-semibold">
+			<h2 class="mb-12 mt-8 text-xl font-semibold">
 				Straipsniai kategorijoje {category?.name ?? 'Kategorija'}
 			</h2>
-			<Faq {articles} />
+			<!-- <Faq {articles} /> -->
+			<Timeline {articles} />
 		{:else}
 			<p class="text-gray-600 dark:text-gray-400">Šioje kategorijoje straipsnių nėra.</p>
 		{/if}

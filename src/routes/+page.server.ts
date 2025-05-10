@@ -4,7 +4,7 @@ import type { Article } from '$lib/types/article';
 
 export const load = async ({ fetch }) => {
 	const res = await fetch(
-		`${PUBLIC_API_URL}/straipsniais?fields=slug,Title,IlgasPavadinimas,Data,Tekstas&sort=Data:desc`
+		`${PUBLIC_API_URL}/straipsniais?populate=*&sort=Data:desc&pagination[limit]=6`
 	);
 	const json = await res.json();
 	return {
@@ -12,9 +12,11 @@ export const load = async ({ fetch }) => {
 			slug: a.slug,
 			Title: a.Title,
 			IlgasPavadinimas: a.IlgasPavadinimas,
-			Data: a.Data,
+			Data: a.Data || a.publishedAt || a.createdAt,
 			Tekstas: a.Tekstas,
-			TekstasHtml: marked.parse(a.Tekstas || '')
+			TekstasHtml: marked.parse(a.Tekstas || ''),
+			categories: a.categories || [],
+			tags: a.tags || []
 		}))
 	};
 };

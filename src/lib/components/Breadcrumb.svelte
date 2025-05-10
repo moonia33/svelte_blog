@@ -5,7 +5,11 @@
 	let { category, article } = $props();
 </script>
 
-<Breadcrumb aria-label="Navigacijos kelias" class="bg-gray-50 px-5 py-3 dark:bg-gray-900">
+<Breadcrumb
+	olClass="overflow-auto"
+	aria-label="Navigacijos kelias"
+	class="bg-gray-50 px-5 py-3 dark:bg-gray-900"
+>
 	<BreadcrumbItem href="/" home>
 		{#snippet icon()}
 			<HomeOutline class="me-2 h-4 w-4" />

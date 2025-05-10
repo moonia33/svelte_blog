@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Faq from '$lib/components/Faq.svelte';
+	import Timeline from '$lib/components/Timeline.svelte';
 	export let data;
 </script>
 
@@ -12,8 +13,9 @@
 		</h1>
 		<p class="mb-6 text-lg text-gray-500 dark:text-gray-400">Šeimos teisės teisiniai straipsniai</p>
 	</div>
-	<div class="mb-8">
+	<!-- <div class="mb-8">
 		<h2 class="mb-4 text-3xl font-bold text-gray-900 dark:text-white">Naujausi straipsniai</h2>
 		<Faq articles={data.articles} />
-	</div>
+	</div> -->
+	<Timeline articles={data.articles} />
 </div>

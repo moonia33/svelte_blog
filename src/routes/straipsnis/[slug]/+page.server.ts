@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
 		const { slug } = params;
 		// Ensure API URL is properly formatted
 		const baseUrl = PUBLIC_API_URL.replace(/\/+$/, '');
-		const apiUrl = `${baseUrl}/straipsniais?filters[slug][$eq]=${slug}&populate=*`;
+		const apiUrl = `${baseUrl}/straipsniais?filters[slug][$eq]=${slug}&populate=*&sort=Data:desc`;
 
 		console.log('Fetching article from:', apiUrl); // Debug log
 

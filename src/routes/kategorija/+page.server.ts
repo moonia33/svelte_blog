@@ -6,7 +6,7 @@ export const load: PageServerLoad = async ({ fetch, depends, url }) => {
 	depends('app:articles'); // Add dependency to trigger reloads
 
 	const page = Number(url.searchParams.get('page')) || 1;
-	const limit = 10; // Ribojame straipsnius po 4 puslapyje
+	const limit = 4; // Ribojame straipsnius po 4 puslapyje
 
 	try {
 		// Ensure API URL is properly formatted

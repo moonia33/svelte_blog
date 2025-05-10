@@ -6,7 +6,7 @@
 </script>
 
 <Header menu2={data.menu2 || []} />
-<main class="mx-auto max-w-7xl bg-white dark:bg-gray-900">
+<main class="mx-auto max-w-7xl bg-white pb-8 dark:bg-gray-900">
 	{@render children()}
 </main>
 <Footer />

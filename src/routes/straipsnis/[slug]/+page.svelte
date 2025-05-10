@@ -2,6 +2,7 @@
 	import { escapeJsonLd } from '$lib/utils/escapeJsonLd';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 	import { ArrowRightAltOutline } from 'flowbite-svelte-icons';
+	import { Badge } from 'flowbite-svelte';
 	import { Span } from 'flowbite-svelte';
 	export let data;
 	const { article } = data;
@@ -66,9 +67,11 @@
 		<div class="mt-10 text-sm text-gray-700 dark:text-gray-300">
 			<strong>Kategorijos:</strong>
 			{#each article.categories as cat, i (cat.id)}
-				<a href={`/kategorija/${cat.slug}`} class="text-primary-600 underline hover:no-underline"
+				<Badge href={`/kategorija/${cat.slug}`} large color="indigo" class="my-1">{cat.name}</Badge>
+				{i < article.categories.length - 1 ? ' ' : ''}
+				<!-- <a href={`/kategorija/${cat.slug}`} class="text-primary-600 underline hover:no-underline"
 					>{cat.name}</a
-				>{i < article.categories.length - 1 ? ', ' : ''}
+				>{i < article.categories.length - 1 ? ', ' : ''} -->
 			{/each}
 		</div>
 	{/if}
@@ -78,9 +81,13 @@
 		<div class="mt-2 text-sm text-gray-700 dark:text-gray-300">
 			<strong>Žymos:</strong>
 			{#each article.tags as tag, i (tag.id)}
-				<a href={`/zyma/${tag.slug}`} class="text-primary-600 underline hover:no-underline"
+				<Badge href={`/zyma/${tag.slug}`} large color="green" class="my-1">
+					{tag.zyma ?? tag.zymas ?? tag.zymo ?? 'Unknown'}</Badge
+				>
+				{i < article.tags.length - 1 ? ' ' : ''}
+				<!-- <a href={`/zyma/${tag.slug}`} class="text-primary-600 underline hover:no-underline"
 					>{tag.zyma ?? tag.zymas ?? tag.zymo ?? 'Unknown'}</a
-				>{i < article.tags.length - 1 ? ', ' : ''}
+				>{i < article.tags.length - 1 ? ', ' : ''} -->
 			{/each}
 		</div>
 	{/if}

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { marked } from 'marked';
 	import type { Article } from '$lib/types/article';
 	import Faq from '$lib/components/Faq.svelte';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import { PUBLIC_URL } from '$env/static/public';
+	import { parseMarkdownWithClasses } from '$lib/utils/markedConfig';
 
 	let { data } = $props();
 	let articles: Article[] = $state([]);
@@ -13,12 +13,19 @@
 	let pageUrl = $state('');
 	let processing = $state(false);
 	const appUrl = PUBLIC_URL.replace(/\/$/, '');
-
 	async function processArticle(article: Article): Promise<Article> {
 		if (!article.Tekstas) return { ...article, TekstasHtml: '' };
 
-		const html = await marked.parse(article.Tekstas);
-		return { ...article, TekstasHtml: html };
+		try {
+			const html = await parseMarkdownWithClasses(article.Tekstas);
+			return { ...article, TekstasHtml: html };
+		} catch (e) {
+			console.error('Klaida apdorojant straipsnio tekstą:', e);
+			return {
+				...article,
+				TekstasHtml: typeof article.Tekstas === 'string' ? article.Tekstas : ''
+			};
+		}
 	}
 
 	$effect(() => {

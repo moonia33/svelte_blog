@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { escapeJsonLd } from '$lib/utils/escapeJsonLd';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+	import { ArrowRightAltOutline } from 'flowbite-svelte-icons';
+	import { Span } from 'flowbite-svelte';
 	export let data;
 	const { article } = data;
 	const title = article.Seo?.[0]?.metaTitle ?? article.Title;
@@ -50,9 +52,9 @@
 	{/if}
 
 	<h1 class="mb-2 text-3xl font-bold">{article.Title}</h1>
-	<blockquote>
-		{article.IlgasPavadinimas}
-	</blockquote>
+	<h2 class="my-0 mb-4 ml-0 flex border-0 py-0 pl-0 text-base font-semibold">
+		<Span class="pr-1"><ArrowRightAltOutline /></Span>{article.IlgasPavadinimas}
+	</h2>
 	<p class="mb-6 text-sm text-gray-500">
 		Publikuota: {new Date(article.Data).toLocaleDateString('lt-LT')}
 	</p>

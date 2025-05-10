@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { marked } from 'marked';
 	import type { Article, Category } from '$lib/types/article';
 	import Faq from '$lib/components/Faq.svelte';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import { PUBLIC_URL } from '$env/static/public';
+	import { parseMarkdownWithClasses } from '$lib/utils/markedConfig';
 
 	let { data } = $props();
 	let articles: Article[] = $state([]);
@@ -17,8 +17,23 @@
 	async function processArticle(article: Article): Promise<Article> {
 		if (!article.Tekstas) return { ...article, TekstasHtml: '' };
 
-		const html = await marked.parse(article.Tekstas);
-		return { ...article, TekstasHtml: html };
+		try {
+			console.log(`Apdorojame straipsnį ${article.Title}, Tekstas tipas:`, typeof article.Tekstas);
+
+			const html = await parseMarkdownWithClasses(article.Tekstas);
+
+			// Patikrinkime, ar rezultate yra sąrašo elementai
+			const hasListItems = html.includes('<ul') || html.includes('<ol');
+			console.log(`Straipsnis ${article.Title} - ar turi sąrašus:`, hasListItems);
+
+			return { ...article, TekstasHtml: html };
+		} catch (e) {
+			console.error('Klaida apdorojant straipsnio tekstą:', e);
+			return {
+				...article,
+				TekstasHtml: typeof article.Tekstas === 'string' ? article.Tekstas : ''
+			};
+		}
 	}
 	$effect(() => {
 		// Nustatome kategorijos informaciją

@@ -87,11 +87,30 @@
         @apply dark:text-gray-200 text-gray-600;
     }
 
+    ol {
+        @apply dark:text-gray-200 text-gray-600;
+    }
+
     img {
         @apply rounded-md my-4;
     }
 
     blockquote {
         @apply border-l-4 border-primary-500 pl-4 italic text-gray-600 dark:text-gray-300 mb-4;
+    }
+
+    /* Stiliai straipsnių sąrašams */
+    ul.article-ul {
+        @apply pl-6 list-disc mb-4 space-y-1 dark:text-gray-200 text-gray-600;
+    }
+
+    ol.article-ol {
+        @apply pl-6 list-decimal mb-4 space-y-1 dark:text-gray-200 text-gray-600;
+    }
+
+    /* Stilizuoti sąrašų elementus */
+    ul.article-ul li,
+    ol.article-ol li {
+        @apply mb-1;
     }
 }

@@ -1,0 +1,46 @@
+// filepath: c:\Pip\svelte5\ti\src\lib\utils\markedConfig.ts
+import { marked } from 'marked';
+
+// Paprastesnis būdas - pridedame CSS klases naudojant regex
+export async function parseMarkdownWithClasses(markdown: string): Promise<string> {
+  // Patikriname, ar markdown nėra objektas ir jei taip - paverčiame į stringą
+  if (markdown && typeof markdown === 'object') {
+    try {
+      markdown = JSON.stringify(markdown);
+    } catch (e) {
+      markdown = '[Neįmanoma atvaizduoti turinio]';
+      console.error('Nepavyko konvertuoti objekto į tekstą:', e);
+    }
+  }
+
+  if (!markdown || typeof markdown !== 'string') {
+    return ''; // Jei nėra teksto arba netinkamo tipo, grąžiname tuščią stringą
+  }
+
+  try {
+    // Pirma patikriname, ar yra sąrašų elementų
+    // Paruošiame Markdown tekstą sąrašų atvaizdavimui
+    // Ieškome sąrašų elementų ir įsitikiname, kad jie turi naują eilutę prieš ir po
+    
+    // Tvarko ne įdėtuosius sąrašus, pavyzdžiui, - elementas
+    markdown = markdown.replace(/^([\s]*[-*+][\s]+)/gm, '\n$1');
+    
+    // Tvarko numeruotus sąrašus
+    markdown = markdown.replace(/^([\s]*\d+\.[\s]+)/gm, '\n$1');
+    
+    // Parseris
+    const html = await marked.parse(markdown || '');
+    
+    // Pridedame klases prie visų sąrašo elementų
+    const processedHtml = html
+      .replace(/<ul(?!\s+class=)/g, '<ul class="article-ul"')
+      .replace(/<ol(?!\s+class=)/g, '<ol class="article-ol"')
+      .replace(/<li(?!\s+class=)/g, '<li class="article-li"');
+      
+    // Išvalome [object Object] teksto gabalus
+    return processedHtml.replace(/\[object Object\]/g, '');
+  } catch (e) {
+    console.error('Klaida apdorojant markdown:', e);
+    return typeof markdown === 'string' ? markdown : '';
+  }
+}

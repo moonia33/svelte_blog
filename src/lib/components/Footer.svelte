@@ -5,22 +5,22 @@
 <Footer footerType="socialmedia" class="bg-slate-200 dark:bg-slate-950">
 	<div class="mx-auto max-w-screen-xl text-center">
 		<p class="my-6 text-gray-600 dark:text-gray-300">
-			Open-source library of over 400+ web components and interactive elements built for better web.
+			Projektas susidūrusiems su teisinėm problemom, siekiant padėti jiems rasti atsakymus į
+			klausimus, susijusius su teisine informacija. Teisinė Info
 		</p>
 		<FooterLinkGroup
 			class="mb-6 flex flex-wrap items-center justify-center text-gray-900 dark:text-white"
 		>
-			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">About</FooterLink>
-			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">Premium</FooterLink>
-			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">Campaigns</FooterLink>
-			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">Blog</FooterLink>
-			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">Affiliate Program</FooterLink>
-			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">FAQs</FooterLink>
-			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">Contact</FooterLink>
+			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">Apie projektą</FooterLink>
+			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">Taisyklės</FooterLink>
+			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">Privatumo politika</FooterLink>
+			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">Slapukai</FooterLink>
 		</FooterLinkGroup>
 		<span class="text-sm text-gray-700 sm:text-center dark:text-gray-200"
-			>© 2011-2025 <a href="https://teisine-konsultacija.lt/" class="hover:underline"
-				>Teisinė Konsultacija™</a
+			>© 2011-2025 <a
+				href="https://teisine-konsultacija.lt/"
+				target="_blank"
+				class="hover:underline">Teisinė Konsultacija™</a
 			>. Visos teisės saugomos.</span
 		>
 	</div>

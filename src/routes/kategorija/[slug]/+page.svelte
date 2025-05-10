@@ -3,6 +3,8 @@
 	import type { Article, Category } from '$lib/types/article';
 	import Faq from '$lib/components/Faq.svelte';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+	import Pagination from '$lib/components/Pagination.svelte';
+	import { PUBLIC_URL } from '$env/static/public';
 
 	let { data } = $props();
 	let articles: Article[] = $state([]);
@@ -11,7 +13,7 @@
 	let pageDescription = $state('');
 	let pageUrl = $state('');
 	let processing = $state(false);
-
+	const appUrl = PUBLIC_URL.replace(/\/$/, '');
 	async function processArticle(article: Article): Promise<Article> {
 		if (!article.Tekstas) return { ...article, TekstasHtml: '' };
 
@@ -25,12 +27,12 @@
 			pageTitle = `${data.category.name} | Teisinė Info`;
 			pageDescription =
 				data.category.description || `Straipsniai kategorijoje ${data.category.name}`;
-			pageUrl = `https://teisine.info/kategorija/${data.category.slug}`;
+			pageUrl = `${appUrl}/kategorija/${data.category.slug}`;
 		} else {
 			category = null;
 			pageTitle = 'Kategorija | Teisinė Info';
 			pageDescription = 'Straipsnių kategorija';
-			pageUrl = 'https://teisine.info/kategorija';
+			pageUrl = `${appUrl}/kategorija`;
 		}
 
 		// Apdorojame straipsnius
@@ -74,12 +76,17 @@
 
 	<div class="px-4">
 		<h1 class="my-6 text-3xl font-bold">{category?.name ?? 'Kategorija'}</h1>
+		{#if pageDescription}
+			<p>{pageDescription}</p>
+		{/if}
 		{#if processing}
 			<p class="text-gray-600 dark:text-gray-400">Kraunama...</p>
 		{:else if articles.length > 0}
+			<h2>Straipsniai kategorijoje {category?.name ?? 'Kategorija'}</h2>
 			<Faq {articles} />
 		{:else}
 			<p class="text-gray-600 dark:text-gray-400">Šioje kategorijoje straipsnių nėra.</p>
 		{/if}
 	</div>
+	<Pagination />
 </div>

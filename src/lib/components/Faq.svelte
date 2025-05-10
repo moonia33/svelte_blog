@@ -23,10 +23,10 @@
 							{article.IlgasPavadinimas || article.Title}
 						</a>
 					{/snippet}
-					<p class="mb-2 text-sm text-gray-400">
+					<p class="mb-2 text-sm text-gray-600 dark:text-gray-300">
 						{new Date(article.Data).toLocaleDateString('lt-LT')}
 					</p>
-					<p class="line-clamp-4 text-gray-500 dark:text-gray-400">
+					<p class="line-clamp-4 text-gray-700 dark:text-gray-300">
 						{@html getPreviewText(article.Tekstas)}
 						<!-- {@html article.TekstasHtml} -->
 					</p>

@@ -7,7 +7,7 @@ export const load: PageServerLoad = async ({ params, fetch, depends, url }) => {
 
 	const { slug } = params;
 	const page = Number(url.searchParams.get('page')) || 1;
-	const limit = 4; // Ribojame straipsnius po 4 puslapyje
+	const limit = 10; // Ribojame straipsnius po 4 puslapyje
 
 	if (!slug) {
 		throw error(404, 'Kategorija nerasta');

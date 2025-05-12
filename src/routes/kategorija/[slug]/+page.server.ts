@@ -1,43 +1,33 @@
-import { PUBLIC_API_URL } from '$env/static/public';
+// file: src/routes/kategorijos/[slug]/+page.server.ts
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { apiFetch } from '$lib/utils/api';
 
 export const load: PageServerLoad = async ({ params, fetch, depends, url }) => {
-	depends('app:category'); // Add dependency to trigger reloads
+	depends('app:category');
 
 	const { slug } = params;
 	const page = Number(url.searchParams.get('page')) || 1;
-	const limit = 10; // Ribojame straipsnius po 4 puslapyje
+	const limit = 12;
 
 	if (!slug) {
 		throw error(404, 'Kategorija nerasta');
 	}
 
 	try {
-		// Ensure API URL is properly formatted
-		const baseUrl = PUBLIC_API_URL.replace(/\/$/, '');
+		// Gauti kategoriją pagal slug
+		const categoryData = await apiFetch(`/categories?filters[slug][$eq]=${slug}`, fetch);
 
-		// First, fetch the category info
-		const categoryResponse = await fetch(`${baseUrl}/categories?filters[slug][$eq]=${slug}`);
-		if (!categoryResponse.ok) {
-			throw error(categoryResponse.status, 'Nepavyko gauti kategorijos');
-		}
-		const categoryData = await categoryResponse.json();
-		if (!categoryData.data?.[0]) {
+		const category = categoryData.data?.[0];
+		if (!category) {
 			throw error(404, 'Kategorija nerasta');
 		}
-		const category = categoryData.data[0];
 
-		// Then fetch articles in this category with pagination
-		const articlesResponse = await fetch(
-			`${baseUrl}/straipsniais?filters[categories][slug][$eq]=${slug}&populate=*&pagination[page]=${page}&pagination[pageSize]=${limit}&sort=Data:desc`
+		// Gauti straipsnius šiai kategorijai
+		const articlesData = await apiFetch(
+			`/straipsniais?filters[categories][slug][$eq]=${slug}&populate=*&pagination[page]=${page}&pagination[pageSize]=${limit}&sort=Data:desc`,
+			fetch
 		);
-
-		if (!articlesResponse.ok) {
-			throw error(articlesResponse.status, 'Nepavyko gauti straipsnių');
-		}
-
-		const articlesData = await articlesResponse.json();
 
 		return {
 			category: {
@@ -49,10 +39,10 @@ export const load: PageServerLoad = async ({ params, fetch, depends, url }) => {
 			articles: articlesData.data || [],
 			pagination: articlesData.meta?.pagination || { page, pageCount: 1, total: 0 },
 			currentPage: page,
-			slug: params.slug
+			slug
 		};
 	} catch (err) {
-		console.error('Error loading category data:', err);
+		console.error('Klaida kraunant kategorijos duomenis:', err);
 		throw error(500, 'Įvyko klaida gaunant duomenis');
 	}
 };

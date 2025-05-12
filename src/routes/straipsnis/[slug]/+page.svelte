@@ -2,24 +2,90 @@
 	import { escapeJsonLd } from '$lib/utils/escapeJsonLd';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 	import { ArrowRightAltOutline } from 'flowbite-svelte-icons';
+	import Image from '$lib/components/Image.svelte';
 	import { Badge } from 'flowbite-svelte';
 	import { Span } from 'flowbite-svelte';
+	import { onMount } from 'svelte';
+	import { PUBLIC_URL } from '$env/static/public';
+	import { PUBLIC_LOGO_URL } from '$env/static/public';
+
+	const base = PUBLIC_URL.replace(/\/+$/, '');
+	const logoUrl = PUBLIC_LOGO_URL.replace(/\/+$/, '');
+
 	export let data;
 	const { article } = data;
-	const title = article.Seo?.[0]?.metaTitle ?? article.Title;
-	const description = article.Seo?.[0]?.metaDescription ?? '';
-	const url = `https://teisine.info/straipsnis/${article.slug}`;
+
+	const title = article.Seo?.metaTitle ?? article.Title;
+	const description = article.Seo?.metaDescription ?? '';
+	const url = `${base}/straipsnis/${article.slug}`;
 	const image = article.Image;
 
+	const keywords = article.tags?.map((tag) => tag.zyma ?? tag.zymas ?? tag.zymo).filter(Boolean);
+
+	const articleSection = article.categories?.map((cat) => cat.name).filter(Boolean);
 	const structuredData = {
 		'@context': 'https://schema.org',
-		'@type': 'Article',
+		'@type': 'BlogPosting',
 		headline: title,
 		description,
 		datePublished: article.Data,
-		image,
-		url
+		dateModified: article.updatedAt,
+		url,
+		image: article.Image || `${logoUrl}`,
+		mainEntityOfPage: {
+			'@type': 'WebPage',
+			'@id': url
+		},
+		publisher: {
+			'@type': 'Organization',
+			name: 'Teisinė informacija',
+			logo: {
+				'@type': 'ImageObject',
+				url: `${logoUrl}`
+			}
+		},
+		author: {
+			'@type': 'Organization',
+			name: 'Teisinė informacija'
+		},
+		keywords: keywords?.join(', ') || undefined,
+		articleSection: articleSection?.join(', ') || undefined
 	};
+
+	// ✅ UTM + GTM event trackinimas
+	onMount(() => {
+		const hostname = window.location.hostname;
+		const campaign = encodeURIComponent(article.slug);
+		const utm = `utm_source=teisine.info&utm_medium=referral&utm_campaign=${campaign}`;
+
+		const container = document.querySelector('[data-article-content]');
+		if (!container) return;
+
+		container.querySelectorAll('a[href^="http"]').forEach((link) => {
+			const a = link as HTMLAnchorElement;
+			try {
+				const url = new URL(a.href);
+				if (url.hostname !== hostname && !url.search.includes('utm_')) {
+					url.search += (url.search ? '&' : '') + utm;
+					a.href = url.toString();
+				}
+
+				// Ne sekame tel/mailto/internal
+				if (!url.href.startsWith('http')) return;
+
+				a.addEventListener('click', () => {
+					window.dataLayer?.push({
+						event: 'outbound_click',
+						url: a.href,
+						campaign,
+						title: article.Title
+					});
+				});
+			} catch {
+				console.warn('Bloga nuoroda:', a.href);
+			}
+		});
+	});
 </script>
 
 <svelte:head>
@@ -42,14 +108,9 @@
 
 <Breadcrumb category={article.categories[0]} {article} />
 
-<article class="prose dark:prose-invert mx-auto max-w-7xl px-8 py-12">
-	{#if article.Image}
-		<img
-			src={article.Image}
-			alt={article.Seo?.[0]?.metaTitle ?? article.Title}
-			class="mb-8 rounded-lg shadow"
-			loading="lazy"
-		/>
+<article class="prose dark:prose-invert mx-auto max-w-7xl px-8 py-12" data-article-content>
+	{#if article.Nuotrauka}
+		<Image image={article.Nuotrauka} format="thumbnail" fallbackAlt={article.Title} />
 	{/if}
 
 	<h1 class="mb-2 text-3xl font-bold">{article.Title}</h1>
@@ -62,32 +123,24 @@
 
 	{@html article.TekstasHtml}
 
-	<!-- Kategorijos -->
 	{#if article.categories?.length}
 		<div class="mt-10 text-sm text-gray-700 dark:text-gray-300">
 			<strong>Kategorijos:</strong>
 			{#each article.categories as cat, i (cat.id)}
 				<Badge href={`/kategorija/${cat.slug}`} large color="indigo" class="my-1">{cat.name}</Badge>
 				{i < article.categories.length - 1 ? ' ' : ''}
-				<!-- <a href={`/kategorija/${cat.slug}`} class="text-primary-600 underline hover:no-underline"
-					>{cat.name}</a
-				>{i < article.categories.length - 1 ? ', ' : ''} -->
 			{/each}
 		</div>
 	{/if}
 
-	<!-- Žymos -->
 	{#if article.tags?.length}
 		<div class="mt-2 text-sm text-gray-700 dark:text-gray-300">
 			<strong>Žymos:</strong>
 			{#each article.tags as tag, i (tag.id)}
 				<Badge href={`/zyma/${tag.slug}`} large color="green" class="my-1">
-					{tag.zyma ?? tag.zymas ?? tag.zymo ?? 'Unknown'}</Badge
-				>
+					{tag.zyma ?? tag.zymas ?? tag.zymo ?? 'Unknown'}
+				</Badge>
 				{i < article.tags.length - 1 ? ' ' : ''}
-				<!-- <a href={`/zyma/${tag.slug}`} class="text-primary-600 underline hover:no-underline"
-					>{tag.zyma ?? tag.zymas ?? tag.zymo ?? 'Unknown'}</a
-				>{i < article.tags.length - 1 ? ', ' : ''} -->
 			{/each}
 		</div>
 	{/if}

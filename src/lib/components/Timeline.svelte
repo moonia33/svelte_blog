@@ -25,8 +25,9 @@
 		<TimelineItem
 			title={article.Title}
 			date={new Date(article.Data).toLocaleDateString('lt-LT')}
-			liClass="w-full md:w-[calc(50%-1.25rem)] mb-2 relative p-6 border-1 rounded-lg border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 shadow-md"
+			liClass="w-full md:w-[calc(50%-1.25rem)] mb-2 relative p-6 border-1 rounded-lg border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 shadow-md"
 			divClass="flex-1"
+			timeClass="text-cyan-800 dark:text-cyan-300"
 		>
 			{#snippet orientationSlot()}
 				<div class="flex items-center">
@@ -39,7 +40,7 @@
 				</div>
 			{/snippet}
 			<p class="mb-2 text-base font-normal text-gray-700 dark:text-gray-300">
-				{article.IlgasPavadinimas || article.Title}
+				{article.IlgasPavadinimas}
 			</p>
 
 			<!-- Kategorijos -->
@@ -61,7 +62,7 @@
 			<div class="mt-2">
 				<a
 					href="/straipsnis/{article.slug}"
-					class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 inline-flex items-center"
+					class="text-primary-900 dark:text-primary-200 inline-flex items-center hover:text-cyan-700 dark:hover:text-cyan-300"
 				>
 					Skaityti daugiau
 					<svg

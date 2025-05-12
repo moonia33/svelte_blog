@@ -70,11 +70,11 @@ export interface Article {
 	TekstasHtml?: string | Promise<string>;
 	Image?: string | null;
 	Nuotrauka?: ArticleImage;
-	Seo?: Array<{
+	Seo?: {
 		id: number;
 		metaTitle: string;
 		metaDescription: string;
-	}>;
+	};
 	categories: Array<{
 		id: number;
 		documentId: string;

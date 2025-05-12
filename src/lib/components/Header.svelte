@@ -49,6 +49,7 @@
 				{/snippet}
 			</MegaMenu>
 		{/if}
+		<NavLi href="/zyma">Žymos</NavLi>
 	</NavUl>
 	<DarkMode
 		aria-label="Tamsus kontrastas"

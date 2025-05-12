@@ -1,17 +1,11 @@
-// src/routes/+layout.server.ts
+// file: src/routes/+layout.server.ts
 import type { LayoutServerLoad } from './$types';
 import type { Category } from '$lib/types/category';
-
-import { PUBLIC_API_URL } from '$env/static/public';
+import { apiFetch } from '$lib/utils/api';
 
 export const load: LayoutServerLoad = async ({ fetch }) => {
 	try {
-		const res = await fetch(`${PUBLIC_API_URL.replace(/\/$/, '')}/categories`);
-		if (!res.ok) {
-			console.error('Failed to fetch categories:', await res.text());
-			return { menu2: [] };
-		}
-		const json = await res.json();
+		const json = await apiFetch('/categories', fetch);
 
 		const menu2 = (json.data as Category[]).map((cat) => ({
 			name: cat.name,
@@ -19,13 +13,9 @@ export const load: LayoutServerLoad = async ({ fetch }) => {
 			help: cat.description ?? ''
 		}));
 
-		return {
-			menu2
-		};
+		return { menu2 };
 	} catch (err) {
-		console.error('Error loading categories:', err);
-		return {
-			menu2: []
-		};
+		console.error('Klaida kraunant kategorijas:', err);
+		return { menu2: [] };
 	}
 };

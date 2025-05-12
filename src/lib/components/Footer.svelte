@@ -11,10 +11,10 @@
 		<FooterLinkGroup
 			class="mb-6 flex flex-wrap items-center justify-center text-gray-900 dark:text-white"
 		>
-			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">Apie projektą</FooterLink>
-			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">Taisyklės</FooterLink>
-			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">Privatumo politika</FooterLink>
-			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/">Slapukai</FooterLink>
+			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/taisykles">Taisyklės</FooterLink>
+			<FooterLink aClass="mr-4 hover:underline md:mr-6" href="/slapukai"
+				>Privatumas ir Slapukai</FooterLink
+			>
 		</FooterLinkGroup>
 		<span class="text-sm text-gray-700 sm:text-center dark:text-gray-200"
 			>© 2011-2025 <a

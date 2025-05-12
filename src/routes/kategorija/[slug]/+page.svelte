@@ -1,10 +1,11 @@
 <script lang="ts">
 	import type { Article, Category } from '$lib/types/article';
-	// import Faq from '$lib/components/Faq.svelte';
+	import { escapeJsonLd } from '$lib/utils/escapeJsonLd';
 	import Timeline from '$lib/components/Timeline.svelte';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import { PUBLIC_URL } from '$env/static/public';
+	import { PUBLIC_LOGO_URL } from '$env/static/public';
 	import { parseMarkdownWithClasses } from '$lib/utils/markedConfig';
 
 	let { data } = $props();
@@ -15,21 +16,18 @@
 	let pageUrl = $state('');
 	let processing = $state(false);
 	const appUrl = PUBLIC_URL.replace(/\/$/, '');
+	const logoUrl = PUBLIC_LOGO_URL;
 	async function processArticle(article: Article): Promise<Article> {
 		if (!article.Tekstas) return { ...article, TekstasHtml: '' };
 
 		try {
-			console.log(`Apdorojame straipsnį ${article.Title}, Tekstas tipas:`, typeof article.Tekstas);
-
 			const html = await parseMarkdownWithClasses(article.Tekstas);
 
 			// Patikrinkime, ar rezultate yra sąrašo elementai
 			const hasListItems = html.includes('<ul') || html.includes('<ol');
-			console.log(`Straipsnis ${article.Title} - ar turi sąrašus:`, hasListItems);
 
 			return { ...article, TekstasHtml: html };
 		} catch (e) {
-			console.error('Klaida apdorojant straipsnio tekstą:', e);
 			return {
 				...article,
 				TekstasHtml: typeof article.Tekstas === 'string' ? article.Tekstas : ''
@@ -37,7 +35,6 @@
 		}
 	}
 	$effect(() => {
-		// Nustatome kategorijos informaciją
 		if (data?.category) {
 			category = data.category;
 			pageTitle = `${data.category.name} | Teisinė Info`;
@@ -51,7 +48,6 @@
 			pageUrl = `${appUrl}/kategorija`;
 		}
 
-		// Apdorojame straipsnius
 		if (data?.articles && Array.isArray(data.articles)) {
 			processing = true;
 			Promise.all(data.articles.map(processArticle))
@@ -59,7 +55,6 @@
 					articles = processedArticles;
 				})
 				.catch((err) => {
-					console.error('Error processing articles:', err);
 					articles = data.articles;
 				})
 				.finally(() => {
@@ -70,6 +65,29 @@
 			processing = false;
 		}
 	});
+	const structuredData = {
+		'@context': 'https://schema.org',
+		'@type': 'CollectionPage',
+		name: `${data.category.name}`,
+		description: `${data.category.description}`,
+		url: `${appUrl}/kategorija/${data.category.slug}`,
+
+		mainEntity: {
+			'@type': 'ItemList',
+			itemListElement: data.articles.map((a: Article, index: number) => ({
+				'@type': 'ListItem',
+				position: index + 1,
+				item: {
+					'@type': 'BlogPosting',
+					headline: a.Title,
+					description: a.IlgasPavadinimas || '',
+					url: `${appUrl}/straipsnis/${a.slug}`,
+					datePublished: a.Data,
+					image: a.Image || `${logoUrl}`
+				}
+			}))
+		}
+	};
 </script>
 
 <svelte:head>
@@ -85,6 +103,8 @@
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={pageTitle} />
 	<meta name="twitter:description" content={pageDescription} />
+
+	{@html `<script type="application/ld+json">${escapeJsonLd(JSON.stringify(structuredData))}</script>`}
 </svelte:head>
 
 <div class="container mx-auto">
@@ -100,7 +120,7 @@
 			<h2 class="mb-12 mt-8 text-xl font-semibold">
 				Straipsniai kategorijoje {category?.name ?? 'Kategorija'}
 			</h2>
-			<!-- <Faq {articles} /> -->
+
 			<Timeline {articles} />
 		{:else}
 			<p class="text-gray-600 dark:text-gray-400">Šioje kategorijoje straipsnių nėra.</p>

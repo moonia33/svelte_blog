@@ -1,13 +1,16 @@
-import { PUBLIC_API_URL, PUBLIC_MEDIA_URL } from '$env/static/public';
+// file: src/routes/straipsniai/[slug]/+page.server.ts
+
 import { error } from '@sveltejs/kit';
-import type { Article } from '$lib/types/article';
+import type { Article, Tag } from '$lib/types/article'; // Importuojame Tag
 import type { PageServerLoad } from './$types';
 import { parseMarkdownWithClasses } from '$lib/utils/markedConfig';
+import { apiFetch } from '$lib/utils/api';
+import { resolveImageUrl } from '$lib/utils/resolveImage';
 
 interface ApiResponse {
 	data: Array<
 		Article & {
-			tags: Array<{ id: number; zyma?: string; zymas?: string; zymo?: string; slug: string }>;
+			tags: Array<Tag>; // Naudojame importuotą Tag tipą
 		}
 	>;
 	meta: {
@@ -23,68 +26,30 @@ interface ApiResponse {
 export const load: PageServerLoad = async ({ fetch, params }) => {
 	try {
 		const { slug } = params;
-		// Ensure API URL is properly formatted
-		const baseUrl = PUBLIC_API_URL.replace(/\/+$/, '');
-		const apiUrl = `${baseUrl}/straipsniais?filters[slug][$eq]=${slug}&populate=*&sort=Data:desc`;
 
-		console.log('Fetching article from:', apiUrl); // Debug log
-
-		const res = await fetch(apiUrl);
-		const responseText = await res.text();
-
-		if (!res.ok) {
-			console.error('Failed to fetch article:', responseText);
-			throw error(404, 'Straipsnis nerastas');
-		}
-
-		let json: ApiResponse;
-		try {
-			json = JSON.parse(responseText);
-		} catch (e) {
-			console.error('Failed to parse JSON:', e);
-			throw error(500, 'Klaida apdorojant duomenis');
-		}
+		// Užklausa per centralizuotą apiFetch
+		const json: ApiResponse = await apiFetch(
+			`/straipsniais?filters[slug][$eq]=${slug}&populate=*&sort=Data:desc`,
+			fetch
+		);
 
 		const item = json.data?.[0];
 		if (!item) {
 			throw error(404, 'Straipsnis nerastas');
 		}
-		// Process image URL
-		const imageUrl = item.Nuotrauka?.formats?.large?.url
-			? `${PUBLIC_MEDIA_URL.replace(/\/+$/, '')}${item.Nuotrauka.formats.large.url}`
-			: item.Nuotrauka?.url
-				? `${PUBLIC_MEDIA_URL.replace(/\/+$/, '')}${item.Nuotrauka.url}`
-				: null;
-		// Parse markdown text safely with custom classes
+		const imageUrl = resolveImageUrl(item.Nuotrauka, 'large');
+		// const imageBase = PUBLIC_MEDIA_URL.replace(/\/+$/, '');
+		// const imageUrl = item.Nuotrauka?.formats?.large?.url
+		// 	? `${imageBase}${item.Nuotrauka.formats.large.url}`
+		// 	: item.Nuotrauka?.url
+		// 		? `${imageBase}${item.Nuotrauka.url}`
+		// 		: null;
+
 		let parsedText: string;
 		try {
-			// Debug: spausdiname Tekstas tipą, kad žinotume, ką gauname
-			console.log(
-				'Tekstas tipas:',
-				typeof item.Tekstas,
-				'Vertė:',
-				item.Tekstas?.substring?.(0, 50) || '[ne stringas]'
-			);
-
-			// Patikrinkime, ar tekste yra sąrašo elementų požymių
-			const hasBulletList =
-				String(item.Tekstas).includes('- ') ||
-				String(item.Tekstas).includes('* ') ||
-				String(item.Tekstas).includes('+ ');
-			const hasNumberedList = /\d+\.\s/.test(String(item.Tekstas));
-			console.log('Tekstas turi sąrašo elementų požymius:', { hasBulletList, hasNumberedList });
-
-			// Apdorojame tekstą su mūsų specialiu parseriu
 			parsedText = await parseMarkdownWithClasses(item.Tekstas || '');
-
-			// Debug: patikriname rezultato ilgį ir ar yra sąrašo elementų
-			console.log('Apdoroto teksto ilgis:', parsedText.length);
-			console.log(
-				'HTML fragmentas su sąrašais:',
-				parsedText.match(/<[uo]l[^>]*>.*?<\/[uo]l>/gs)?.[0] || 'Nerasta'
-			);
 		} catch (e) {
-			console.error('Failed to parse markdown:', e);
+			console.error('Markdown klaida:', e);
 			parsedText = typeof item.Tekstas === 'string' ? item.Tekstas : '';
 		}
 
@@ -102,10 +67,7 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
 
 		return { article: processedArticle };
 	} catch (err) {
-		console.error('Error loading article:', err);
-		if (err instanceof Error) {
-			throw error(500, err.message);
-		}
+		console.error('Klaida kraunant straipsnį:', err);
 		throw error(500, 'Klaida apdorojant straipsnį');
 	}
 };

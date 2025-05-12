@@ -22,6 +22,9 @@ export async function parseMarkdownWithClasses(markdown: string): Promise<string
 		// Tvarkyti sąrašų formatavimą, įsitikinant kad jie tinkamai atpažįstami
 		let processedMarkdown = markdown;
 
+		// Pataisyti antraštes (pridėti tarpą po # simbolių)
+		processedMarkdown = processedMarkdown.replace(/^(#{1,6})([^#\s])/gm, '$1 $2');
+
 		// Įsitikinant, kad prieš kiekvieną sąrašo elementą yra nauja eilutė
 		processedMarkdown = processedMarkdown.replace(/([^\n])(\n[ \t]*[-*+][ \t]+)/g, '$1\n\n$2');
 		processedMarkdown = processedMarkdown.replace(/([^\n])(\n[ \t]*\d+\.[ \t]+)/g, '$1\n\n$2');

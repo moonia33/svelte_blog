@@ -15,7 +15,13 @@
 </script>
 
 <Navbar color="slate" class="bg-slate-200 dark:bg-slate-950">
-	<NavBrand href="/">Teisinė Info</NavBrand>
+	<NavBrand href="/">
+		<img src="/logo.png" class="me-3 h-6 sm:h-9" alt="Teisinė info logo" />
+		<span
+			class="self-center whitespace-nowrap text-lg font-semibold text-amber-900 dark:text-amber-100"
+			>Teisinė Info</span
+		>
+	</NavBrand>
 	<NavHamburger />
 	<NavUl ulClass="text-lg font-medium md:text-lg">
 		<NavLi href="/">Pagrindinis</NavLi>

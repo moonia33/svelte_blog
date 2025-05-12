@@ -108,7 +108,7 @@
 
 <Breadcrumb category={article.categories[0]} {article} />
 
-<article class="prose dark:prose-invert mx-auto max-w-7xl px-8 py-12" data-article-content>
+<article class="prose dark:prose-invert mx-auto max-w-7xl px-3 py-12 md:px-10" data-article-content>
 	{#if article.Nuotrauka}
 		<Image image={article.Nuotrauka} format="thumbnail" fallbackAlt={article.Title} />
 	{/if}

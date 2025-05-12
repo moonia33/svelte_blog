@@ -42,9 +42,9 @@
 	<meta property="og:url" content="https://teisine.info" />
 	{@html `<script type="application/ld+json">${escapeJsonLd(JSON.stringify(structuredData))}</script>`}
 </svelte:head>
-<div class="container mx-auto px-10 py-6">
-	<div class="flex flex-col items-center justify-center">
-		<h1 class="mb-4 text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+<div class="container mx-auto px-3 py-6 md:px-10">
+	<div class="flex flex-col items-center justify-center pb-10">
+		<h1 class="mb-4 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
 			{data.pavadinimas}
 		</h1>
 		{@html data.descriptionHtml}

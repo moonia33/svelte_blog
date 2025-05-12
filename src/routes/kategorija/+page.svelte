@@ -101,14 +101,14 @@
 	{@html `<script type="application/ld+json">${escapeJsonLd(JSON.stringify(structuredData))}</script>`}
 </svelte:head>
 
-<div class="container mx-auto">
+<div class="container mx-auto px-3 py-12 md:px-10">
 	<Breadcrumb
 		category={null}
 		basePage={{ name: 'Visos kategorijos', slug: 'kategorija' }}
 		article={null}
 	/>
 
-	<div class="px-4">
+	<div>
 		<h1 class="my-6 text-3xl font-bold">Visi straipsniai</h1>
 		<p>{pageDescription}</p>
 

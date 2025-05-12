@@ -51,10 +51,10 @@
 	<meta name="twitter:description" content={pageDescription} />
 </svelte:head>
 
-<div class="container mx-auto">
+<div class="container mx-auto px-3 py-12 md:px-10">
 	<Breadcrumb tag={null} basePage={{ name: 'Žymos', slug: 'zyma' }} article={null} />
 
-	<div class="px-10">
+	<div>
 		<h1 class="my-6 text-2xl font-bold">Žymos</h1>
 		<p class="mb-6">Pasirinkite žymą, kad pamatytumėte susijusius straipsnius:</p>
 

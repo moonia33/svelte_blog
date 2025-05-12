@@ -105,9 +105,9 @@
 	{@html `<script type="application/ld+json">${escapeJsonLd(JSON.stringify(structuredData))}</script>`}
 </svelte:head>
 
-<div class="container mx-auto">
+<div class="container mx-auto px-3 py-12 md:px-10">
 	<Breadcrumb {tag} article={null} />
-	<div class="px-10">
+	<div>
 		<h1 class="my-6 text-3xl font-bold">
 			{tag?.name || tag?.zyma || tag?.zymas || tag?.zymo || 'Žyma'}
 		</h1>

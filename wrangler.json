@@ -1,0 +1,14 @@
+{
+	"name": "teisine-info",
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"compatibility_date": "2025-05-12",
+	"compatibility_flags": ["streams_enable_constructors"],
+	"assets": {
+		"directory": "static",
+		"binding": "ASSETS"
+	},
+	"vars": {
+		"PUBLIC_URL": "https://teisine.info"
+	},
+	"node_compat": true
+}

@@ -10,5 +10,11 @@
 	"vars": {
 		"PUBLIC_URL": "https://teisine.info"
 	},
-	"node_compat": true
+	"node_compat": true,
+	"routes": [
+		{
+			"pattern": "teisine.info/*",
+			"zone_name": "teisine.info"
+		}
+	]
 }
